@@ -74,14 +74,15 @@
 
 <body>
     <center>
-    <h1>THIS IS A TEST</h1>
+    <h1>MonkeBot Deadline Helper</h1>
     </center>
     <div class = "box"></div>
     <div class="boxed">
         <div>
             <div id="chatbox">
+              <img src="/static/monkebot.jpg" alt="monkebot picture" style="width:36px;height:36px;">
                 <p class="botText">
-                    <span>Hello i am a bot</span>
+                    <span>Hello i am MonkeBot</span>
                 </p>
             </div>
             <div id = "userInput">
@@ -101,7 +102,7 @@
         .getElementById("userInput")
         .scrollIntoView({block: "start", behavior: "smooth"});
       $.get("/get", {msg:rawText}).done(function(data){
-        var botHtml = '<p class="botText"><span>' + data + "</span></p>";
+        var botHtml = '<p class="botText"> <img src="/static/monkebot.jpg" alt="monkebot picture" style="width:36px;height:36px;"> <span>' + data + "</span></p>";
         $("#chatbox").append(botHtml);
         document
           .getElementById("userInput")
