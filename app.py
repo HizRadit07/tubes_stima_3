@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request
 import re
-import datetime
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -8,6 +8,8 @@ deadline = []
 Bulan = ["[Jj]anuari","[Ff]ebruari","[Mm]aret","[Aa]pril","[Mm]ei","[jJ]uni","[Jj]uli","[aA]gustus","[sS]eptember","[oO]ktober","[Nn]ovember","[Dd]esember"]
 Kode_kuliah = ["IF2121","IF2110","IF2120","IF2124","IF2123","IF2130","IF2210","IF2211","IF2220","IF2230","IF2240","IF2250"]
 kata_penting = ["[kK]uis","[uU]jian","[tT]ucil","[tT]ubes","[pP]raktikum"]
+
+
 
 def convertArrToString(array):
     s = ""
@@ -25,18 +27,74 @@ def findKodeKuliah(myString):#find kode kuliah in a string
             break
     return kk
 
-def findTipeTugas(myString):
+def findTipeTugas(myString): #return string tipe tugas, depends on isi kata_penting
     for elements in kata_penting:
         tugas = re.search(elements,myString)
         if (type(tugas) is not type(None)): #if found then break
             break
     return tugas
-def findTopikTugas(myString,kodeKuliah):
-    topik = re.search("(?<="+kodeKuliah+")(.*)(?=pada)",myString)
+def findTopikTugas(myString,kodeKuliah):#returns topik tugas, must be in between "kode kuliah" and "pada"
+    topik = re.search("(?<="+kodeKuliah+" )(.*)(?=pada)",myString)
     return topik
-def findTanggal(myString):
-    tanggal = re.search("(?<=pada)(.*)",myString)
+
+def findTanggal(myString): #returns string tanggal, always after "pada"
+    tanggal = re.search("(?<=pada )(.*)[0-9]",myString) #makes it stop at [0-9] (detects end of year)
     return tanggal
+
+def stringContainsBulanName(myString): #returns true if a string contains nama bulan in the Bulan array
+    for elements in Bulan:
+        nameExist = re.search(elements,myString)
+        if (type(nameExist) is not type(None)): #if found then break
+            break
+    if (type(nameExist) is not type(None)): #if found
+        return True
+    else:
+        return False
+
+print(stringContainsBulanName("Desember"))
+
+def convertBulanToMonth(tanggalString):
+    #oh boy this is a long one
+    #basically reformat the name of month in a string from indonesian to english
+    if "januari" in tanggalString or "Januari" in tanggalString:
+        return re.sub("[jJ]anuari","January",tanggalString)
+    elif "februari" in tanggalString or "Februari" in tanggalString:
+        return re.sub("[fF]ebruari","February",tanggalString)
+    elif "maret" in tanggalString or "Maret" in tanggalString:
+        return re.sub("[mM]aret","March",tanggalString)
+    elif "april" in tanggalString:
+        return re.sub("april","April",tanggalString)
+    elif "mei" in tanggalString or "Mei" in tanggalString:
+        return re.sub("[mM]ei","May",tanggalString)
+    elif "juni" in tanggalString or "Juni" in tanggalString:
+        return re.sub("[jJ]uni","June",tanggalString)
+    elif "juli" in tanggalString or "Juli" in tanggalString:
+        return re.sub("[jJ]uli","July",tanggalString)
+    elif "agustus" in tanggalString or "Agustus" in tanggalString:
+        return re.sub("[aA]gustus","August",tanggalString)
+    elif "oktober" in tanggalString or "Oktober" in tanggalString:
+        return re.sub("[oO]ktober","October",tanggalString)
+    elif "desember" in tanggalString or "Desember" in tanggalString:
+        return re.sub("[dD]esember","December",tanggalString)
+    else:
+        return tanggalString
+    
+def convertStringToDate(myString): #returns datetime object
+    if "-" in myString and len(myString)== 10: #case xx-xx-XXXX
+        return datetime.strptime(myString, '%d-%m-%Y')
+    elif "/" in myString and len(myString)==10: #case xx/xx/XXXX
+        return datetime.strptime(myString, '%d/%m/%Y')
+    elif "-" in myString and len(myString)==8: #case xx-xx-xx
+        return datetime.strptime(myString, '%d-%m-%y')
+    elif "/" in myString and len(myString)==8: #case xx/xx/xx
+        return datetime.strptime(myString, '%d/%m/%y')
+    elif (stringContainsBulanName(myString) and " " in myString[-3]): #case xx bulan xx
+        formatted = convertBulanToMonth(myString)
+        return datetime.strptime(formatted, '%d %B %y')
+    else: #case xx bulan XXXX
+        formatted = convertBulanToMonth(myString)
+        return datetime.strptime(formatted, '%d %B %Y')
+    
 
 
 #rendering the template
@@ -56,12 +114,12 @@ def get_bot_response():
         tugas = findTipeTugas(userText)
         topik = findTopikTugas(userText,kk[0])
         tanggal = findTanggal(userText)
-        newDeadline = tanggal[0] + "-" + kk[0] + "-" + tugas[0] + "-" +topik[0]
+        tanggal_formatted = convertStringToDate(tanggal[0])
+        newDeadline = str(tanggal_formatted.day) +"/"+ str(tanggal_formatted.month) + "/" + str(tanggal_formatted.year) + "-" + kk[0] + "-" + tugas[0] + "-" +topik[0]
         deadline.append(newDeadline)
         return "Berhasil add <br/>" + newDeadline
     else:
         return "Maaf, command tidak dikenali"
-
 
 
 
