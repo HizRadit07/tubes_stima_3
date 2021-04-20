@@ -41,6 +41,15 @@ def findTanggal(myString): #returns string tanggal, always after "pada"
     tanggal = re.search("(?<=pada )(.*)[0-9]",myString) #makes it stop at [0-9] (detects end of year)
     return tanggal
 
+def findTanggalNoPada(myString): #returns string tanggal, always after "pada"
+    tanggal = re.search("(\d)+-(\d)+-(\d)+",myString) or re.search("(\d)+/(\d)+/(\d)+",myString) #makes it stop at [0-9] (detects end of year)
+    if (type(tanggal) is type(None)):
+        for i in range(len(Bulan)):
+            tanggal = re.search("(\d)+ " + Bulan[i] + " (\d)+", myString)
+            if (type(tanggal) is not type(None)):
+                break
+    return tanggal
+
 def stringContainsBulanName(myString): #returns true if a string contains nama bulan in the Bulan array
     for elements in Bulan:
         nameExist = re.search(elements,myString)
@@ -108,6 +117,8 @@ def get_bot_response():
     userText = request.args.get('msg') #INI YG BAKAL DIPROSES
     #case1: add deadlines
     case1 = re.search("[Aa]dd",userText) or re.search("[TNtn]ambah",userText)
+    # case 2: undur atau majuin deadline
+    case2 = re.search("[Uu]ndur",userText) or re.search("[Mm]aju", userText)
 
     if (type(case1) is not type(None)): #handle case1
         kk = findKodeKuliah(userText)
@@ -116,10 +127,35 @@ def get_bot_response():
         tanggal = findTanggal(userText)
         tanggal_formatted = convertStringToDate(tanggal[0])
         newDeadline = str(tanggal_formatted.day) +"/"+ str(tanggal_formatted.month) + "/" + str(tanggal_formatted.year) + "-" + kk[0] + "-" + tugas[0] + "-" +topik[0]
+        #  14/04/2021 - IF2211 - Tubes - String matching
         deadline.append(newDeadline)
         return "Berhasil add <br/>" + newDeadline
     else:
         return "Maaf, command tidak dikenali"
+
+def undurDeadline(ipt):
+    # asumsi id sebuah task itu nomor index + 1 a.k.a. elemen ke-berapa dari array deadline
+    # dari main, udh dapet pesannya ada tulisan ubah
+    # cari idnya sama tanggal
+    # lalu update
+    id = re.search("\s\d+\s", ipt) # cari bilangan yg berdiri sendiri
+    realID = int(id[0][1 : (len(id[0]) - 1)])
+    # print(realID)
+    if (realID > len(deadline)):
+        print("ID tidak ada")
+    else:
+        tobeUpdated = deadline[realID - 1]
+        tanggalNow = findTanggalNoPada(tobeUpdated)[0]
+        
+
+        tanggal = findTanggalNoPada(ipt)
+        tanggal = convertStringToDate(tanggal[0])
+        tanggal = str(tanggal.day)+"/"+str(tanggal.month)+"/"+str(tanggal.year)
+        
+        newdeadline = tobeUpdated.replace(tanggalNow, tanggal)
+        deadline[realID - 1] = newdeadline
+
+
 
 
 
