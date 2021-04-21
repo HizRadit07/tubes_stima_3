@@ -4,7 +4,7 @@ from datetime import datetime
 
 app = Flask(__name__)
 
-deadline = []
+deadline = ["14/04/2021 - IF2211 - Tubes - String matching"]
 Bulan = ["[Jj]anuari","[Ff]ebruari","[Mm]aret","[Aa]pril","[Mm]ei","[jJ]uni","[Jj]uli","[aA]gustus","[sS]eptember","[oO]ktober","[Nn]ovember","[Dd]esember"]
 Kode_kuliah = ["IF2121","IF2110","IF2120","IF2124","IF2123","IF2130","IF2210","IF2211","IF2220","IF2230","IF2240","IF2250"]
 kata_penting = ["[kK]uis","[uU]jian","[tT]ucil","[tT]ubes","[pP]raktikum"]
@@ -115,11 +115,14 @@ def index():
 @app.route("/get")
 def get_bot_response():    
     userText = request.args.get('msg') #INI YG BAKAL DIPROSES
+    # uwu finder
+    uwu = re.search("[Uu][Ww][Uu]",userText)
     #case1: add deadlines
-    case1 = re.search("[Aa]dd",userText) or re.search("[TNtn]ambah",userText)
+    case1 = re.search("[Aa]dd|[TNtn]ambah",userText)
     # case 2: undur atau majuin deadline
-    case2 = re.search("[Uu]ndur",userText) or re.search("[Mm]aju", userText)
+    case2 = re.search("[Uu]ndur|[Mm]aju|[Gg]anti",userText)
 
+    returner = ""
     if (type(case1) is not type(None)): #handle case1
         kk = findKodeKuliah(userText)
         tugas = findTipeTugas(userText)
@@ -129,31 +132,38 @@ def get_bot_response():
         newDeadline = str(tanggal_formatted.day) +"/"+ str(tanggal_formatted.month) + "/" + str(tanggal_formatted.year) + "-" + kk[0] + "-" + tugas[0] + "-" +topik[0]
         #  14/04/2021 - IF2211 - Tubes - String matching
         deadline.append(newDeadline)
-        return "Berhasil add <br/>" + newDeadline
-    else:
-        return "Maaf, command tidak dikenali"
+        returner += "Berhasil add <br/>" + newDeadline
+    elif (type(case2) is not type(None)):
+        id = re.search("\s\d+\s", userText) # cari bilangan yg berdiri sendiri
+        realID = int(id[0][1 : (len(id[0]) - 1)])
+        if (realID > len(deadline)):
+            returner += "ID tidak ada"
+        else:
+            tanggal = findTanggalNoPada(userText)
+            tanggal = convertStringToDate(tanggal[0])
+            tanggal = str(tanggal.day)+"/"+str(tanggal.month)+"/"+str(tanggal.year)
 
-def undurDeadline(ipt):
+            tobeUpdated = deadline[realID - 1]
+            tanggalNow = findTanggalNoPada(tobeUpdated)[0]
+            undurDeadline(realID, tanggalNow, tanggal)  
+
+            returner += "Deadline " + str(realID) +" berhasil di" + str(case2[0][0].lower() + case2[0][1:])+ " menjadi "+tanggal
+    else:
+        returner += "Maaf, command tidak dikenali"
+    if (type(uwu) is not type(None)):
+        returner += " uwu"
+    return returner
+
+def undurDeadline(id, tanggalNow, tanggalNext):
     # asumsi id sebuah task itu nomor index + 1 a.k.a. elemen ke-berapa dari array deadline
     # dari main, udh dapet pesannya ada tulisan ubah
     # cari idnya sama tanggal
     # lalu update
-    id = re.search("\s\d+\s", ipt) # cari bilangan yg berdiri sendiri
-    realID = int(id[0][1 : (len(id[0]) - 1)])
     # print(realID)
-    if (realID > len(deadline)):
-        print("ID tidak ada")
-    else:
-        tobeUpdated = deadline[realID - 1]
-        tanggalNow = findTanggalNoPada(tobeUpdated)[0]
-        
-
-        tanggal = findTanggalNoPada(ipt)
-        tanggal = convertStringToDate(tanggal[0])
-        tanggal = str(tanggal.day)+"/"+str(tanggal.month)+"/"+str(tanggal.year)
-        
-        newdeadline = tobeUpdated.replace(tanggalNow, tanggal)
-        deadline[realID - 1] = newdeadline
+    tobeUpdated = deadline[id - 1]
+    
+    newdeadline = tobeUpdated.replace(tanggalNow, tanggalNext)
+    deadline[id - 1] = newdeadline
 
 
 
