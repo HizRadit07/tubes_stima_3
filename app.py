@@ -5,6 +5,7 @@ from datetime import datetime
 app = Flask(__name__)
 
 deadline = []
+# intinya baca line pertama, terus iterasi deadline semua di deadline.txt
 f = open("deadline.txt",'r')
 cnt = int(f.readline())
 if cnt > 0:
@@ -171,6 +172,7 @@ def get_bot_response():
     if (type(uwu) is not type(None)):
         returner += " uwu"
 
+    # intinya update deadline txt sama jadwal baru abis command
     f = open("deadline.txt",'w')
     f.write(str(len(deadline)) + '\n')
     for i in deadline[:-1]:
@@ -178,6 +180,7 @@ def get_bot_response():
     if (len(deadline) > 0):
         f.write(deadline[-1])
     f.close()
+
     return returner
 
 def undurDeadline(id, tanggalNow, tanggalNext):
