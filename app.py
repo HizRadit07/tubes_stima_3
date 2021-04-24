@@ -114,6 +114,7 @@ def index():
 #get endpoint
 @app.route("/get")
 def get_bot_response():    
+    # asumsi id sebuah task itu nomor index + 1 a.k.a. elemen ke-berapa dari array deadline
     userText = request.args.get('msg') #INI YG BAKAL DIPROSES
     # uwu finder
     uwu = re.search("[Uu][Ww][Uu]",userText)
@@ -121,7 +122,8 @@ def get_bot_response():
     case1 = re.search("[Aa]dd|[TNtn]ambah",userText)
     # case 2: undur atau majuin deadline
     case2 = re.search("[Uu]ndur|[Mm]aju|[Gg]anti",userText)
-
+    # case 3: task selesai
+    case3 = re.search("[Ss]elesai|[Dd]one",userText)
     returner = ""
     if (type(case1) is not type(None)): #handle case1
         kk = findKodeKuliah(userText)
@@ -148,6 +150,10 @@ def get_bot_response():
             undurDeadline(realID, tanggalNow, tanggal)  
 
             returner += "Deadline " + str(realID) +" berhasil di" + str(case2[0][0].lower() + case2[0][1:])+ " menjadi "+tanggal
+    elif (type(case3) is not type(None)):
+        res = taskDone(userText)
+        print(deadline)
+        returner += res
     else:
         returner += "Maaf, command tidak dikenali"
     if (type(uwu) is not type(None)):
@@ -155,7 +161,6 @@ def get_bot_response():
     return returner
 
 def undurDeadline(id, tanggalNow, tanggalNext):
-    # asumsi id sebuah task itu nomor index + 1 a.k.a. elemen ke-berapa dari array deadline
     # dari main, udh dapet pesannya ada tulisan ubah
     # cari idnya sama tanggal
     # lalu update
@@ -165,7 +170,16 @@ def undurDeadline(id, tanggalNow, tanggalNext):
     newdeadline = tobeUpdated.replace(tanggalNow, tanggalNext)
     deadline[id - 1] = newdeadline
 
-
+def taskDone(userText):
+    id = re.search("\s\d+\s", userText) # cari bilangan yg berdiri sendiri
+    print(id)
+    realID = int(id[0][1 : (len(id[0]) - 1)])
+    print(realID)
+    if (realID > len(deadline)):
+        return "ID tidak ada"
+    else:
+        deadline.remove(deadline[realID - 1])
+        return "Deadline " + str(realID) + " sudah selesai"
 
 
 
