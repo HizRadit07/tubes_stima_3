@@ -4,7 +4,15 @@ from datetime import datetime
 
 app = Flask(__name__)
 
-deadline = ["14/04/2021 - IF2211 - Tubes - String matching"]
+deadline = []
+f = open("deadline.txt",'r')
+cnt = int(f.readline())
+if cnt > 0:
+    for i in range(cnt - 1):
+        deadline.append(f.readline()[:-1])
+    deadline.append(f.readline())
+    f.close()
+print(deadline)
 Bulan = ["[Jj]anuari","[Ff]ebruari","[Mm]aret","[Aa]pril","[Mm]ei","[jJ]uni","[Jj]uli","[aA]gustus","[sS]eptember","[oO]ktober","[Nn]ovember","[Dd]esember"]
 Kode_kuliah = ["IF2121","IF2110","IF2120","IF2124","IF2123","IF2130","IF2210","IF2211","IF2220","IF2230","IF2240","IF2250"]
 kata_penting = ["[kK]uis","[uU]jian","[tT]ucil","[tT]ubes","[pP]raktikum"]
@@ -134,7 +142,7 @@ def get_bot_response():
         newDeadline = str(tanggal_formatted.day) +"/"+ str(tanggal_formatted.month) + "/" + str(tanggal_formatted.year) + "-" + kk[0] + "-" + tugas[0] + "-" +topik[0]
         #  14/04/2021 - IF2211 - Tubes - String matching
         deadline.append(newDeadline)
-        returner += "Berhasil add <br/>" + newDeadline
+        returner += "Berhasil add <br/>" + "(ID: " + str(len(deadline)) +") "+ newDeadline
     elif (type(case2) is not type(None)):
         id = re.search("\s\d+\s", userText) # cari bilangan yg berdiri sendiri
         tanggal = findTanggalNoPada(userText)
@@ -157,12 +165,19 @@ def get_bot_response():
                 returner += "Deadline " + str(realID) +" berhasil di" + str(case2[0][0].lower() + case2[0][1:])+ " menjadi "+tanggal
     elif (type(case3) is not type(None)):
         res = taskDone(userText)
-        print(deadline)
         returner += res
     else:
         returner += "Maaf, command tidak dikenali"
     if (type(uwu) is not type(None)):
         returner += " uwu"
+
+    f = open("deadline.txt",'w')
+    f.write(str(len(deadline)) + '\n')
+    for i in deadline[:-1]:
+        f.write(i+'\n')
+    if (len(deadline) > 0):
+        f.write(deadline[-1])
+    f.close()
     return returner
 
 def undurDeadline(id, tanggalNow, tanggalNext):
@@ -180,9 +195,7 @@ def taskDone(userText):
     if (type(id) is type(None)):
         return "Mohon tambahkan ID"
     else:
-        print(id)
         realID = int(id[0][1 : (len(id[0]) - 1)])
-        print(realID)
         if (realID > len(deadline)):
             return "ID tidak ada"
         else:
