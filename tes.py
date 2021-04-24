@@ -2,7 +2,7 @@ import re
 from app import findTanggalNoPada, Bulan, convertStringToDate
 
 myString = "maju mundur ganti"
-yes = re.search("[Uu]ndur|[Mm]aju|[Gg]anti",myString)
+yes = re.search("dio",myString)
 print(yes)
 # tanggal = re.search("(\d)+-(\d)+-(\d)+",myString) or re.search("(\d)+/(\d)+/(\d)+",myString) #makes it stop at [0-9] (detects end of year)
 # if (type(tanggal) is type(None)):

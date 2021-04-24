@@ -137,19 +137,24 @@ def get_bot_response():
         returner += "Berhasil add <br/>" + newDeadline
     elif (type(case2) is not type(None)):
         id = re.search("\s\d+\s", userText) # cari bilangan yg berdiri sendiri
-        realID = int(id[0][1 : (len(id[0]) - 1)])
-        if (realID > len(deadline)):
-            returner += "ID tidak ada"
+        tanggal = findTanggalNoPada(userText)
+        if (type(id) is type(None)):
+            returner += "Mohon tambahkan ID"
+        elif (type(tanggal) is type(None)):
+            returner += "Mohon tambahkan tanggal"
         else:
-            tanggal = findTanggalNoPada(userText)
-            tanggal = convertStringToDate(tanggal[0])
-            tanggal = str(tanggal.day)+"/"+str(tanggal.month)+"/"+str(tanggal.year)
+            realID = int(id[0][1 : (len(id[0]) - 1)])
+            if (realID > len(deadline)):
+                returner += "ID tidak ada"
+            else:
+                tanggal = convertStringToDate(tanggal[0])
+                tanggal = str(tanggal.day)+"/"+str(tanggal.month)+"/"+str(tanggal.year)
 
-            tobeUpdated = deadline[realID - 1]
-            tanggalNow = findTanggalNoPada(tobeUpdated)[0]
-            undurDeadline(realID, tanggalNow, tanggal)  
+                tobeUpdated = deadline[realID - 1]
+                tanggalNow = findTanggalNoPada(tobeUpdated)[0]
+                undurDeadline(realID, tanggalNow, tanggal)  
 
-            returner += "Deadline " + str(realID) +" berhasil di" + str(case2[0][0].lower() + case2[0][1:])+ " menjadi "+tanggal
+                returner += "Deadline " + str(realID) +" berhasil di" + str(case2[0][0].lower() + case2[0][1:])+ " menjadi "+tanggal
     elif (type(case3) is not type(None)):
         res = taskDone(userText)
         print(deadline)
@@ -172,14 +177,17 @@ def undurDeadline(id, tanggalNow, tanggalNext):
 
 def taskDone(userText):
     id = re.search("\s\d+\s", userText) # cari bilangan yg berdiri sendiri
-    print(id)
-    realID = int(id[0][1 : (len(id[0]) - 1)])
-    print(realID)
-    if (realID > len(deadline)):
-        return "ID tidak ada"
+    if (type(id) is type(None)):
+        return "Mohon tambahkan ID"
     else:
-        deadline.remove(deadline[realID - 1])
-        return "Deadline " + str(realID) + " sudah selesai"
+        print(id)
+        realID = int(id[0][1 : (len(id[0]) - 1)])
+        print(realID)
+        if (realID > len(deadline)):
+            return "ID tidak ada"
+        else:
+            deadline.remove(deadline[realID - 1])
+            return "Deadline " + str(realID) + " sudah selesai"
 
 
 
