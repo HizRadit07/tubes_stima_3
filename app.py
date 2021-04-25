@@ -133,6 +133,8 @@ def get_bot_response():
     case2 = re.search("[Uu]ndur|[Mm]aju|[Gg]anti",userText)
     # case 3: task selesai
     case3 = re.search("[Ss]elesai|[Dd]one",userText)
+    # case 6: help
+    case6 = re.search("[hH]elp|[bB]antu",userText)
     returner = ""
     if (type(case1) is not type(None)): #handle case1
         kk = findKodeKuliah(userText)
@@ -167,6 +169,10 @@ def get_bot_response():
     elif (type(case3) is not type(None)):
         res = taskDone(userText)
         returner += res
+    elif (type(case6) is not type(None)):
+        returner+= "COMMAND 1. add Deadline<br/>Format: text must contain 'add'/'tambah', and 'pada {Tanggal}'<br/> e.g. 'add Tubes IF2211 String Matching pada 14 April 2021' <br/>"
+        returner+= "COMMAND 2. modify Deadline<br/> Format: text must contain 'undur'/'maju'/'ganti' + detail deadline (kode kelas, tanggal, dsb)</br> e.g. 'Deadline 1 diundur 24/02/2020'"
+        returner+= "COMMAND 6. help<br/>Format: text must contain 'help'/'bantu'<br/>"
     else:
         returner += "Maaf, command tidak dikenali"
     if (type(uwu) is not type(None)):
