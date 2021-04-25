@@ -135,17 +135,22 @@ def get_bot_response():
     case3 = re.search("[Ss]elesai|[Dd]one",userText)
     # case 6: help
     case6 = re.search("[hH]elp|[bB]antu",userText)
+
     returner = ""
     if (type(case1) is not type(None)): #handle case1
-        kk = findKodeKuliah(userText)
-        tugas = findTipeTugas(userText)
-        topik = findTopikTugas(userText,kk[0])
-        tanggal = findTanggal(userText)
-        tanggal_formatted = convertStringToDate(tanggal[0])
-        newDeadline = str(tanggal_formatted.day) +"/"+ str(tanggal_formatted.month) + "/" + str(tanggal_formatted.year) + "-" + kk[0] + "-" + tugas[0] + "-" +topik[0]
-        #  14/04/2021 - IF2211 - Tubes - String matching
-        deadline.append(newDeadline)
-        returner += "Berhasil add <br/>" + "(ID: " + str(len(deadline)) +") "+ newDeadline
+        try:
+            kk = findKodeKuliah(userText)
+            tugas = findTipeTugas(userText)
+            topik = findTopikTugas(userText,kk[0])
+            tanggal = findTanggal(userText)
+            tanggal_formatted = convertStringToDate(tanggal[0])
+            newDeadline = str(tanggal_formatted.day) +"/"+ str(tanggal_formatted.month) + "/" + str(tanggal_formatted.year) + "-" + kk[0] + "-" + tugas[0] + "-" +topik[0]
+            #  14/04/2021 - IF2211 - Tubes - String matching
+            deadline.append(newDeadline)
+            returner += "Berhasil add <br/>" + "(ID: " + str(len(deadline)) +") "+ newDeadline
+        except:
+            returner += "Masukkan sesuai format. Ketik 'help' untuk bantuan"
+
     elif (type(case2) is not type(None)):
         id = re.search("\s\d+\s", userText) # cari bilangan yg berdiri sendiri
         tanggal = findTanggalNoPada(userText)
@@ -166,16 +171,36 @@ def get_bot_response():
                 undurDeadline(realID, tanggalNow, tanggal)  
 
                 returner += "Deadline " + str(realID) +" berhasil di" + str(case2[0][0].lower() + case2[0][1:])+ " menjadi "+tanggal
+
     elif (type(case3) is not type(None)):
         res = taskDone(userText)
         returner += res
+
     elif (type(case6) is not type(None)):
-        returner+= "COMMAND 1. add Deadline<br/>Format: text must contain 'add'/'tambah', and 'pada {Tanggal}'<br/> e.g. 'add Tubes IF2211 String Matching pada 14 April 2021' <br/>"
-        returner+= "COMMAND 2. modify Deadline<br/> Format: text must contain 'undur'/'maju'/'ganti' + detail deadline (kode kelas, tanggal, dsb)</br> e.g. 'Deadline 1 diundur 24/02/2020'"
+        returner+= "COMMAND 1. add Deadline<br/>Format: text must contain 'add'/'tambah', and 'pada {Tanggal}'<br/> e.g. 'add Tubes IF2211 String Matching pada 14 April 2021' <br/><br/>"
+        returner+= "COMMAND 2. modify Deadline<br/> Format: text must contain 'undur'/'maju'/'ganti' + detail deadline (kode kelas, tanggal, dsb)</br> e.g. 'Deadline 1 diundur 24/02/2020' <br/><br/>"
         returner+= "COMMAND 6. help<br/>Format: text must contain 'help'/'bantu'<br/>"
+        
     else:
         returner += "Maaf, command tidak dikenali"
     if (type(uwu) is not type(None)):
+        # uwu bot update, not used by default, kalo mau pake uncomment aja
+        # # uwu bot 2.0
+        # returner = returner.replace("l", "w").replace("r","w").replace("L", "W").replace("R","W")
+        # # uwu bot 3.0 (broken, ntah kenapa ketemu </br> jadi ancur)
+        # vowel = ["a","i","u","e","o"]
+        # prec=""
+        # j = 0
+        # yes = True
+        # for i in returner:
+        #     if i in vowel and prec not in vowel and prec != "w" and yes:
+        #         returner = returner[:j] + "w" + returner[j:]
+        #         j+=1
+        #     yes = not(yes)
+        #     prec = i
+        #     j+=1
+
+        # uwu 1.0
         returner += " uwu"
 
     # intinya update deadline txt sama jadwal baru abis command
