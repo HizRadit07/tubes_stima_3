@@ -20,11 +20,11 @@ Program dijalankan dengan menjalankan app.py. Sebelumnya, perlu diinstall librar
 
 ## Code Examples
 Show examples of usage:
-`Add deadline kuis IF2240 pada 22/02/2020 dong abang bot`
-`Deadlinenya susah, jadi dosen bilang deadline 1 diundur jadi 22 April 2021`
-`Hari ini dosen bad mood jadi deadline 2 dimajuin jadi 24/12/1999 :(`
-`Asik! Deadline 1 udah selesai`
-`<add pesan buat nampilin deadline disini>`
+`Add deadline kuis IF2240 pada 22/02/2020 dong abang bot`  
+`Deadlinenya susah, jadi dosen bilang deadline 1 diundur jadi 22 April 2021`  
+`Hari ini dosen bad mood jadi deadline 2 dimajuin jadi 24/12/1999 :(`  
+`Asik! Deadline 1 udah selesai`  
+`<add pesan buat nampilin deadline disini>`  
 `help pls`
 
 ## Features
