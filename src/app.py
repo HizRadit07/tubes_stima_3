@@ -179,6 +179,7 @@ def get_bot_response():
     elif (type(case6) is not type(None)):
         returner+= "COMMAND 1. add Deadline<br/>Format: text must contain 'add'/'tambah', and 'pada {Tanggal}'<br/> e.g. 'add Tubes IF2211 String Matching pada 14 April 2021' <br/><br/>"
         returner+= "COMMAND 2. modify Deadline<br/> Format: text must contain 'undur'/'maju'/'ganti' + detail deadline (kode kelas, tanggal, dsb)</br> e.g. 'Deadline 1 diundur 24/02/2020' <br/><br/>"
+        returner+= "COMMAND 3. selesaikan deadline<br/> Format: text must contain deadline ID and keyword 'selesai' or 'done' e.g. 'deadline 1 selesai uwu'"
         returner+= "COMMAND 6. help<br/>Format: text must contain 'help'/'bantu'<br/>"
         
     else:
