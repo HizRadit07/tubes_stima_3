@@ -6,7 +6,7 @@ app = Flask(__name__)
 
 deadline = []
 # intinya baca line pertama, terus iterasi deadline semua di deadline.txt
-f = open("deadline.txt",'r')
+f = open("test/deadline.txt",'r')
 cnt = int(f.readline())
 if cnt > 0:
     for i in range(cnt - 1):
