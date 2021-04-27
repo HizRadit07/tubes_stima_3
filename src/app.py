@@ -138,7 +138,7 @@ def get_bot_response():
     # case 4 : seluruh task
     case4 = re.search("[Aa]pa|[Ss]aja|[Dd]eadline|[Ss]ejauh",userText)
     # case 5 : seluruh task antar tanggal
-    case5 = re.search("[Aa]pa|[Ss]aja|[Dd]eadline|[Ss]ampai|[Aa]ntara",userText)
+    case5 = re.search("[Aa]pa|[Ss]aja|[Dd]eadline|[Ss]ampai|[Aa]ntara|dan",userText)
     # case 8 : deadline suatu task tertentu
     case8 = re.search("[Dd]eadline|[Tt]u[BbGg][EeAa][Ss]|IF....",userText)
 
@@ -186,7 +186,7 @@ def get_bot_response():
         returner += res
     elif (type(case5) is not type(None)):
         tanggal1 = re.search("(?<=antara )(.*)[0-9]",myString)
-        tanggal2 = re.search("(?<=sampai )(.*)[0-9]",myString)
+        tanggal2 = re.search("(?<=sampai )(.*)[0-9]",myString) or re.search("(?<=dan )(.*)[0-9]",myString)
         res = showDeadlineAllTanggal(tanggal1,tanggal2)
         returner += res
 
