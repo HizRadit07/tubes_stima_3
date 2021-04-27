@@ -74,7 +74,7 @@ print(stringContainsBulanName("Desember"))
 def convertBulanToMonth(tanggalString):
     #oh boy this is a long one
     #basically reformat the name of month in a string from indonesian to english
-    if "januari" in tanggalString or "Januari" in tanggalString:
+    if "januari" in tanggalString or "Januari" in tanggalString: 
         return re.sub("[jJ]anuari","January",tanggalString)
     elif "februari" in tanggalString or "Februari" in tanggalString:
         return re.sub("[fF]ebruari","February",tanggalString)
@@ -135,6 +135,12 @@ def get_bot_response():
     case3 = re.search("[Ss]elesai|[Dd]one",userText)
     # case 6: help
     case6 = re.search("[hH]elp|[bB]antu",userText)
+    # case 4 : seluruh task
+    case4 = re.search("[Aa]pa|[Ss]aja|[Dd]eadline|[Ss]ejauh",userText)
+    # case 5 : seluruh task antar tanggal
+    case5 = re.search("[Aa]pa|[Ss]aja|[Dd]eadline|[Ss]ampai|[Aa]ntara",userText)
+    # case 8 : deadline suatu task tertentu
+    case8 = re.search("[Dd]eadline|[Tt]u[BbGg][EeAa][Ss]|IF....",userText)
 
     returner = ""
     if (type(case1) is not type(None)): #handle case1
@@ -175,12 +181,25 @@ def get_bot_response():
     elif (type(case3) is not type(None)):
         res = taskDone(userText)
         returner += res
+    elif (type(case4) is not type(None)):
+        res = showDeadlineAll()
+        returner += res
+    elif (type(case5) is not type(None)):
+        tanggal1 = re.search("(?<=antara )(.*)[0-9]",myString)
+        tanggal2 = re.search("(?<=sampai )(.*)[0-9]",myString)
+        res = showDeadlineAllTanggal(tanggal1,tanggal2)
+        returner += res
 
     elif (type(case6) is not type(None)):
         returner+= "COMMAND 1. add Deadline<br/>Format: text must contain 'add'/'tambah', and 'pada {Tanggal}'<br/> e.g. 'add Tubes IF2211 String Matching pada 14 April 2021' <br/><br/>"
         returner+= "COMMAND 2. modify Deadline<br/> Format: text must contain 'undur'/'maju'/'ganti' + detail deadline (kode kelas, tanggal, dsb)</br> e.g. 'Deadline 1 diundur 24/02/2020' <br/><br/>"
         returner+= "COMMAND 3. selesaikan deadline<br/> Format: text must contain deadline ID and keyword 'selesai' or 'done' e.g. 'deadline 1 selesai uwu'"
         returner+= "COMMAND 6. help<br/>Format: text must contain 'help'/'bantu'<br/>"
+    
+    elif (type(case8) is not type(None)):
+        tugas = findKodeKuliah(userText)
+        res = showDeadlineTertentu(tugas)
+        returner += res
         
     else:
         returner += "Maaf, command tidak dikenali"
@@ -237,7 +256,32 @@ def taskDone(userText):
             deadline.remove(deadline[realID - 1])
             return "Deadline " + str(realID) + " sudah selesai"
 
+def showDeadlineAll():
+    #sejauh ini
+    listdeadline = []
+    for dead in deadline:
+        listdeadline.append(dead)
+    return listdeadline
+
+def showDeadlineAllTanggal(tanggal1, tanggal2):
+    date1 = convertStringToDate(tanggal1)
+    date2 = convertStringToDate(tanggal2)
+    listdeadline = []
+    for dead in deadline:
+        deaddate = convertStringToDate(re.search(r'/d/d[-]/d/d[-]/d/d/d/d', dead).string)
+        if (date1 <= deaddate and deaddate <= date2):
+            listdeadline.append(dead)
+    return listdeadline
+
+def showDeadlineTertentu(tugas):
+    for dead in deadline:
+        if (re.search(tugas, dead) != None){
+            tanggal = re.search(r'/d/d[-]/d/d[-]/d/d/d/d')
+            break
+        }
+    return tanggal
 
 
 if __name__ == "__main__":
     app.run(debug = True)
+ 
