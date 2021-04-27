@@ -275,7 +275,7 @@ def showDeadlineAllTanggal(tanggal1, tanggal2):
 
 def showDeadlineTertentu(tugas):
     for dead in deadline:
-        if (re.search(tugas, dead) != None){
+        if (re.search(tugas, dead) != None && re.search("[Tt]ugas", dead) != None){
             tanggal = re.search(r'/d/d[-]/d/d[-]/d/d/d/d')
             break
         }
