@@ -197,8 +197,12 @@ def get_bot_response():
     elif (type(case6) is not type(None)):
         returner+= "COMMAND 1. add Deadline<br/>Format: text must contain 'add'/'tambah', and 'pada {Tanggal}'<br/> e.g. 'add Tubes IF2211 String Matching pada 14 April 2021' <br/><br/>"
         returner+= "COMMAND 2. modify Deadline<br/> Format: text must contain 'undur'/'maju'/'ganti' + detail deadline (kode kelas, tanggal, dsb)</br> e.g. 'Deadline 1 diundur 24/02/2020' <br/><br/>"
-        returner+= "COMMAND 3. selesaikan deadline<br/> Format: text must contain deadline ID and keyword 'selesai' or 'done' e.g. 'deadline 1 selesai uwu'"
-        returner+= "COMMAND 6. help<br/>Format: text must contain 'help'/'bantu'<br/>"
+        returner+= "COMMAND 3. selesaikan deadline<br/> Format: text must contain deadline ID and keyword 'selesai' or 'done' e.g. 'deadline 1 selesai uwu'<br/>"
+        returner+= "COMMAND 4. show all deadline <br/> Format: text must contain 'apa' / 'saja' / 'deadline' / 'sejauh' <br/>"
+        returner+= "COMMAND 5. deadline all task in between dates <br/> Format: text must contain 'antara' or 'dan' and 2 dates <br/>"
+        returner+= "COMMAND 6. help <br/>Format: text must contain 'help'/'bantu'<br/>"
+        returner+= "COMMAND 7. deadline tugas spesifik between dates <br/> Format: text must contain 'antara' or 'dan' and 2 dates and the keyword 'tugas' / 'tubes' <br/>"
+        returner+= "COMMAND 8. deadline tugas per kode kelas <br/> Format: text must contain keyword 'tugas' / 'tubes' and kode kelas IF...."
     
     elif (type(case7) is not type(None)):
         tanggalNow = datetime.datetime.Now 
