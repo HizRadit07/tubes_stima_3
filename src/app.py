@@ -329,7 +329,7 @@ def showDeadlineTertentu(tugas, tipe):
     return tanggal
 
 def showDeadlinePeriodeTask(tanggal, task):
-    listdeadline = ["[Daftar Deadline]"]
+    listdeadline = ["[Daftar Deadline]<br/>"]
     for dead in deadline:
         if (re.search("task", dead) != None):
             deaddate = convertStringToDate(re.search(r'\d\d[/]\d\d[/]\d\d\d\d', dead)[0])
