@@ -282,7 +282,7 @@ def taskDone(userText):
 
 def showDeadlineAll():
     #sejauh ini
-    listdeadline = []
+    listdeadline = ["[Daftar Deadline]"]
     for dead in deadline:
         listdeadline.append(dead)
     return listdeadline
@@ -290,7 +290,7 @@ def showDeadlineAll():
 def showDeadlineAllTanggal(tanggal1, tanggal2):
     date1 = convertStringToDate(tanggal1)
     date2 = convertStringToDate(tanggal2)
-    listdeadline = []
+    listdeadline = ["[Daftar Deadline]"]
     for dead in deadline:
         deaddate = convertStringToDate(re.search(r'\d\d[-]\d\d[-]\d\d\d\d', dead)[0])
         if (date1 <= deaddate and deaddate <= date2):
@@ -305,7 +305,7 @@ def showDeadlineTertentu(tugas):
     return tanggal
 
 def showDeadlinePeriodeTask(tanggal, task):
-    listdeadline = []
+    listdeadline = ["[Daftar Deadline]"]
     for dead in deadline:
         if (re.search("task", dead) != None):
             deaddate = convertStringToDate(re.search(r'\d\d[-]\d\d[-]\d\d\d\d', dead)[0])
