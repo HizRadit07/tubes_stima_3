@@ -136,24 +136,32 @@ def get_bot_response():
     # case 6: help
     case6 = re.search("[hH]elp|[bB]antu",userText)
     # case 4 : seluruh task
-    case4 = re.search("[Aa]pa|[Ss]aja|[Dd]eadline|[Ss]ejauh|[Ss]ampai|[Aa]ntara|dan|[\d*]|[Mm]inggu|[Hh]ari|[Bb]ulan|[Tt]u[gb][ae]s|[Kk]uis",userText)
+    case4 = re.search("[Aa]pa|[Ss]aja|[Ss]ejauh|[Ss]ampai|[Aa]ntara|dan|[Mm]inggu|[Hh]ari|[Bb]ulan|[Tt]u[gb][ae]s|[Kk]uis",userText)
     # case 8 : deadline suatu task tertentu
-    case8 = re.search("[Dd]eadline|[Tt]u[bg][ea][s]|IF....",userText)
-
+    case8 = re.search("[Dd]eadline|[Tt]ubes|[Tt]ucil|IF....",userText)
     returner = ""
     if (type(case1) is not type(None)): #handle case1
-        try:
-            kk = findKodeKuliah(userText)
-            tugas = findTipeTugas(userText)
-            topik = findTopikTugas(userText,kk[0])
-            tanggal = findTanggal(userText)
-            tanggal_formatted = convertStringToDate(tanggal[0])
-            newDeadline = str(tanggal_formatted.day) +"/"+ str(tanggal_formatted.month) + "/" + str(tanggal_formatted.year) + "-" + kk[0] + "-" + tugas[0] + "-" +topik[0]
-            #  14/04/2021 - IF2211 - Tubes - String matching
-            deadline.append(newDeadline)
-            returner += "Berhasil add <br/>" + "(ID: " + str(len(deadline)) +") "+ newDeadline
-        except:
-            returner += "Masukkan sesuai format. Ketik 'help' untuk bantuan"
+        # try:
+        kk = findKodeKuliah(userText)
+        tugas = findTipeTugas(userText)
+        topik = findTopikTugas(userText,kk[0])
+        tanggal = findTanggal(userText)
+        print(tanggal[0])
+        tanggal_formatted = convertStringToDate(tanggal[0])
+
+        td = str(tanggal_formatted.day)
+        if len(td) == 1:
+            td = "0" + td
+        tm = str(tanggal_formatted.month)
+        if len(tm) == 1:
+            tm = "0" + tm
+
+        newDeadline = str(td) +"/"+ str(tm) + "/" + str(tanggal_formatted.year) + "-" + kk[0] + "-" + tugas[0] + "-" +topik[0]
+        #  14/04/2021 - IF2211 - Tubes - String matching
+        deadline.append(newDeadline)
+        returner += "Berhasil add <br/>" + "(ID: " + str(len(deadline)) +") "+ newDeadline
+        # except:
+        #     returner += "Masukkan sesuai format. Ketik 'help' untuk bantuan"
 
     elif (type(case2) is not type(None)):
         id = re.search("\s\d+\s", userText) # cari bilangan yg berdiri sendiri
@@ -185,19 +193,21 @@ def get_bot_response():
             for r in res:
                 returner += r
         elif (re.search("[Ss]ampai|[Aa]ntara|dan",userText) != None):
-            tanggal1 = re.search("(?<=antara )(.*)(?=sampai)",userText)[0] or re.search("(?<=antara )(.*)(?=dan)",userText)
+            tanggal1 = re.search("(?<=antara )(.*)(?=sampai)",userText)[0] or re.search("(?<=antara )(.*)(?=dan)",userText)[0]
             tanggal2 = re.search("(?<=sampai )(.*)[0-9]",userText)[0] or re.search("(?<=dan )(.*)[0-9]",userText)[0]
-            res = showDeadlineAllTanggal(tanggal1,tanggal2)
+            res = showDeadlineAllTanggal(tanggal1[:-1],tanggal2)
             for r in res:
                 returner += r
         elif (re.search("[Hh]ari ini",userText) != None):
-            tanggal = datetime.datetime.Now
+            tanggal = datetime.now().strftime("%d/%m/%Y")
+            print(tanggal)
             res = showDeadlineAllTanggal(tanggal,tanggal)
             for r in res:
                 returner += r
         elif (re.search("[\d*]|[Mm]inggu|[Hh]ari|[Bb]ulan|[Tt]u[gb][ae]s|[Kk]uis",userText) != None):
-            tanggalNow = datetime.datetime.Now 
-            n = int(re.search(r'\d*',userText))
+            tanggalNow = datetime.now().strftime("%d/%m/%Y")
+            print(re.search(r'\d+',userText))
+            n = int(re.search(r'\d+',userText)[0])
             tipeN = re.search(r"[Mm]inggu",userText) or re.search(r"[Hh]ari",userText) or re.search(r"[Bb]ulan",userText)
             if (tipeN == "Hari" or tipeN == "hari"):
                 d = datetime.timedelta(days=n)
@@ -209,7 +219,7 @@ def get_bot_response():
                 d = datetime.timedelta(months=n)
                 tanggal2 = tanggalNow + d
             task = re.search("[Kk]uis", userText) or re.search("[Tt]ugas", userText) or re.search("[Tt]ubes", userText)
-            res = showDeadlinePeriodeTask(tanggal2, task)
+            res = showDeadlinePeriodeTask(tanggalNow, task)
             for r in res:
                 returner += r
 
@@ -225,8 +235,9 @@ def get_bot_response():
     
 
     elif (type(case8) is not type(None)):
+        tipe = re.search("[Tt]ubes|[Tt]ucil",userText)[0]
         tugas = findKodeKuliah(userText)
-        res = showDeadlineTertentu(tugas)
+        res = showDeadlineTertentu(tugas, tipe)
         returner += res
         
     else:
@@ -289,22 +300,31 @@ def showDeadlineAll():
     listdeadline = ["[Daftar Deadline]"]
     for dead in deadline:
         listdeadline.append(dead)
+    if len(listdeadline) == 1:
+        listdeadline = ["Tidak ada deadline :D"]
     return listdeadline
 
 def showDeadlineAllTanggal(tanggal1, tanggal2):
     date1 = convertStringToDate(tanggal1)
     date2 = convertStringToDate(tanggal2)
-    listdeadline = ["[Daftar Deadline]"]
+    listdeadline = ["[Daftar Deadline]<br/>"]
     for dead in deadline:
-        deaddate = convertStringToDate(re.search(r'\d\d[-]\d\d[-]\d\d\d\d', dead)[0])
+        # dd = re.search(r'\d\d[/]\d[/]\d\d\d\d', dead)[0] or re.search(r'\d\d[/]\d\d[/]\d\d\d\d', dead)[0]
+
+        deaddate = convertStringToDate(re.search(r'\d\d[/]\d\d[/]\d\d\d\d', dead)[0])
+        # deaddate
         if (date1 <= deaddate and deaddate <= date2):
             listdeadline.append(dead)
+    if len(listdeadline) == 1:
+        listdeadline = ["Tidak ada deadline :D"]
     return listdeadline
 
-def showDeadlineTertentu(tugas):
+def showDeadlineTertentu(tugas, tipe):
+    print(tugas)
     for dead in deadline:
-        if (re.search(tugas, dead) != None and re.search("[Tt]ugas", dead) != None):
-            tanggal = re.search(r'\d\d[-]\d\d[-]\d\d\d\d')[0]
+        print(dead)
+        if (type(re.search(tugas[0], dead)) != type(None) and type(re.search(tipe, dead)) != type(None)):
+            tanggal = re.search(r'\d\d[/]\d\d[/]\d\d\d\d', dead)[0]
             break
     return tanggal
 
@@ -312,9 +332,11 @@ def showDeadlinePeriodeTask(tanggal, task):
     listdeadline = ["[Daftar Deadline]"]
     for dead in deadline:
         if (re.search("task", dead) != None):
-            deaddate = convertStringToDate(re.search(r'\d\d[-]\d\d[-]\d\d\d\d', dead)[0])
+            deaddate = convertStringToDate(re.search(r'\d\d[/]\d\d[/]\d\d\d\d', dead)[0])
             if (deaddate <= tanggal):
                 listdeadline.append(dead)
+    if len(listdeadline) == 1:
+        listdeadline = ["Tidak ada deadline :D"]
     return listdeadline
 
 if __name__ == "__main__":
