@@ -6,7 +6,7 @@ app = Flask(__name__)
 
 deadline = []
 # intinya baca line pertama, terus iterasi deadline semua di deadline.txt
-f = open("../test/deadline.txt",'r')
+f = open("test/deadline.txt",'r')
 cnt = int(f.readline())
 if cnt > 0:
     for i in range(cnt - 1):
@@ -250,7 +250,7 @@ def get_bot_response():
         returner += " uwu"
 
     # intinya update deadline txt sama jadwal baru abis command
-    f = open("deadline.txt",'w')
+    f = open("test/deadline.txt",'w')
     f.write(str(len(deadline)) + '\n')
     for i in deadline[:-1]:
         f.write(i+'\n')
