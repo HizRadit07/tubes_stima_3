@@ -297,7 +297,7 @@ def taskDone(userText):
 
 def showDeadlineAll():
     #sejauh ini
-    listdeadline = ["[Daftar Deadline]"]
+    listdeadline = ["[Daftar Deadline]<br/>"]
     for dead in deadline:
         listdeadline.append(dead)
     if len(listdeadline) == 1:

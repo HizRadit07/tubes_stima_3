@@ -24,7 +24,8 @@ Show examples of usage:
 `Deadlinenya susah, jadi dosen bilang deadline 1 diundur jadi 22 April 2021`  
 `Hari ini dosen bad mood jadi deadline 2 dimajuin jadi 24/12/1999 :(`  
 `Asik! Deadline 1 udah selesai`  
-`<add pesan buat nampilin deadline disini>`  
+`deadline sejauh ini apa aja???`  
+`deadline tucil IF2240`  
 `help pls`
 
 ## Features
