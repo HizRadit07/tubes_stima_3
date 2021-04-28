@@ -185,8 +185,8 @@ def get_bot_response():
             for r in res:
                 returner += r
         elif (re.search("[Ss]ampai|[Aa]ntara|dan",userText) != None):
-            tanggal1 = re.search("(?<=antara )(.*)[0-9]",userText)
-            tanggal2 = re.search("(?<=sampai )(.*)[0-9]",userText) or re.search("(?<=dan )(.*)[0-9]",userText)
+            tanggal1 = re.search("(?<=antara )(.*)(?=sampai)",userText)[0] or re.search("(?<=antara )(.*)(?=dan)",userText)
+            tanggal2 = re.search("(?<=sampai )(.*)[0-9]",userText)[0] or re.search("(?<=dan )(.*)[0-9]",userText)[0]
             res = showDeadlineAllTanggal(tanggal1,tanggal2)
             for r in res:
                 returner += r
